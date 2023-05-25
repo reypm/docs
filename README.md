@@ -13,7 +13,8 @@
    - [Install Cakebrew](#install-cakebrew)
    - [Cheatsheet](#cheatsheet)
    - Install Parallels Tools
-5. Others
+5. [Others](#others)
+   - [Proxmox VE Download Backup Files](#proxmox-downloadupload-backup-files)
    - Install Parallels Tools
 
 ## Common Configurations
@@ -138,4 +139,16 @@ $ pbcopy < file.txt
 You can check if the content is there by using the "pbpaste" command:
 ```bash
 $ pbpaste
+```
+
+## Others
+### [Proxmox Download/Upload Backup Files](https://forum.proxmox.com/threads/how-to-download-upload-backup-files.127656/)
+> Note: the below command has to be executed from the client
+```bash
+# if you are using macOS
+# option 1
+scp proxmox:/var/lib/vz/dump/. .
+
+# if you are using Linux/macOS
+scp proxmox:/var/lib/vz/dump/\* .
 ```
