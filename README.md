@@ -143,11 +143,43 @@ $ pbpaste
 
 ## Others
 ### [Proxmox Download/Upload Backup Files](https://forum.proxmox.com/threads/how-to-download-upload-backup-files.127656/)
-> Note: the below command has to be executed from the client
+- Log into your machine and read your file `/etc/pve/storage.cfg` to check where PVE is storing the backup files:
+```zsh
+$ cat /etc/pve/storage.cfg
+dir: local
+	path /var/lib/vz
+	content iso,vztmpl,backup
+lvmthin: local-lvm
+	thinpool data
+	vgname pve
+	content rootdir,images
+
+zfspool: zfs_disk
+	pool zfs_disk
+	content rootdir,images
+	mountpoint /zfs_disk
+	nodes pve
+```
+- Go to the directory `/var/lib/vz` and list the contents:
+```zsh
+$ cd /var/lib/vz/dump/
+$ ls -l
+total 18618116
+-rw-r--r-- 1 root root        1078 May 18 21:15 vzdump-qemu-101-2023_05_18-21_15_44.log
+-rw-r--r-- 1 root root        4087 May 25 10:24 vzdump-qemu-101-2023_05_25-10_22_26.log
+-rw-r--r-- 1 root root  6590814742 May 25 10:24 vzdump-qemu-101-2023_05_25-10_22_26.vma.zst
+-rw-r--r-- 1 root root           7 May 25 10:24 vzdump-qemu-101-2023_05_25-10_22_26.vma.zst.notes
+-rw-r--r-- 1 root root        3596 May 18 21:15 vzdump-qemu-103-2023_05_18-21_07_33.log
+-rw-r--r-- 1 root root        5962 May 25 17:50 vzdump-qemu-103-2023_05_25-17_47_05.log
+-rw-r--r-- 1 root root 12474096384 May 25 17:50 vzdump-qemu-103-2023_05_25-17_47_05.vma.zst
+-rw-r--r-- 1 root root          13 May 25 17:50 vzdump-qemu-103-2023_05_25-17_47_05.vma.zst.notes
+```
+- Copy the files from your machine
 ```bash
 # if you are using macOS
 # option 1
 scp proxmox:/var/lib/vz/dump/. .
+scp -r <user>@<ip_address>:/var/lib/vz/dump/. .
 
 # if you are using Linux/macOS
 scp proxmox:/var/lib/vz/dump/\* .
