@@ -9,6 +9,8 @@
 3. Ubuntu Server Configuration Snippets
 4. [macOS Configuration Snippets](#macos)
    - [Install Homebrew](#install-homebrew)
+   - [Installing packages using Brewfiles](#installing-packages-using-brewfile)
+     - [Creating a new Brewfile](#creating-a-new-brewfile)
    - [Install Bat](#install-bat)
    - [Install Cakebrew](#install-cakebrew)
    - [Cheatsheet](#cheatsheet)
@@ -121,6 +123,17 @@ Run these two commands in your terminal to add Homebrew to your PATH:
 ```zsh
 $ echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/reynierpm/.zprofile
 $ eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+### Installing packages using Brewfile
+> Note: you can use the included file from this repository and adjust it according your needs or create a brand new `Brewfile`
+Go to the directory where the `Brewfile` is located and run the following command:
+```zhs
+brew bundle
+```
+#### Creating a new Brewfile
+Go to the directory where you want to create the file and run the below command, a new file named `Brewfile` will be created containing all your installed packages
+```bash
+brew bundle dump
 ```
 ### [Install Cakebrew](https://www.cakebrew.com)
 ```zsh
