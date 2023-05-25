@@ -5,13 +5,13 @@
    - [Install OhMyZsh](#install-ohmyzsh)
      - [OhMyZSH Recommended Configuration](#ohmyszh-recommended-configuration)
    - [Setup Powerlevel10k Theme](#setup-powerlevel10k-theme)
-1. [Fedora Server Configuration Snippets](#example)
-   - [Install Parallels Tools](#install-parallels-tools)
-1. [Ubuntu Server Configuration Snippets](#example)
-2. [macOS](#macos)
+2. Fedora Server Configuration Snippets
+3. Ubuntu Server Configuration Snippets
+4. [macOS Configuration Snippets](#macos)
    - [Install Homebrew](#install-homebrew)
    - [Install Bat](#install-bat)
-3. [Others](#others)
+   - Install Parallels Tools
+5. [Others](#others)
    - Install Parallels Tools
 
 ## Common Configurations
