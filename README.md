@@ -18,6 +18,11 @@
 5. [Others](#others)
    - [Proxmox VE Download Backup Files](#proxmox-downloadupload-backup-files)
    - Install Parallels Tools
+6. [Docker Containers](#docker-containers)
+   - [Sonar-Extended](#sonar-extended)
+   - [Radar-Extended](#radarr-extended)
+   - [Deluge](#deluge)
+   - [Portainer](#portainer)
 
 ## Common Configurations
 ### Git Configuration
@@ -196,4 +201,72 @@ scp -r <user>@<ip_address>:/var/lib/vz/dump/. .
 
 # if you are using Linux/macOS
 scp proxmox:/var/lib/vz/dump/\* .
+```
+
+## Docker Containers
+### [Sonar-Extended](https://github.com/RandomNinjaAtk/docker-sonarr-extended)
+```bash
+docker run \
+  --name=sonarr-extended \
+  --restart unless-stopped \
+  -v /home/develop/dockerConfig/sonarr-extended:/config \
+  -p 8989:8989 \
+  -e TZ=America/New_York \
+  -e enableAutoConfig=true \
+  -e enableRecyclarr=true \
+  -e enableQueueCleaner=true \
+  -e enableYoutubeSeriesDownloader=true \
+  -e enableExtras=true \
+  -e extrasType=all \
+  -e extrasLanguages=en-US,es-ES \
+  -e extrasOfficialOnly=false \
+  -e plexUrl=http://192.168.11.80:32400 \
+  -e plexToken=Token_Goes_Here \
+  randomninjaatk/sonarr-extended:latest
+```
+### [Radarr-Extended](https://github.com/RandomNinjaAtk/docker-radarr-extended)
+```bash
+docker run \
+  --name=radarr-extended \
+  --restart unless-stopped \
+  -v /home/develop/dockerConfig/radarr-extended:/config \
+  -p 7878:7878 \
+  -e TZ=America/New_York \
+  -e enableAutoConfig=true \
+  -e enableRecyclarr=true \
+  -e enableQueueCleaner=true \
+  -e enableExtras=true \
+  -e extrasType=all \
+  -e extrasLanguages=en-US,es-ES \
+  -e extrasOfficialOnly=false \
+  -e extrasSingle=false \
+  -e extrasKodiCompatibility=false \
+  -e plexUrl=http://192.168.11.80:32400 \
+  -e plexToken=Token_Goes_Here \
+  randomninjaatk/radarr-extended:latest
+```
+### [Deluge](https://hub.docker.com/r/linuxserver/deluge)
+```bash
+docker run -d \
+  --name=deluge \
+  -e TZ=America/New_York \
+  -e DELUGE_LOGLEVEL=error \
+  -p 8112:8112 \
+  -p 6881:6881 \
+  -p 6881:6881/udp \
+  -v /home/develop/dockerConfig/deluge:/config \
+  -v /path/to/your/downloads:/downloads \
+  --restart unless-stopped \
+  lscr.io/linuxserver/deluge:latest
+```
+### [Portainer](https://docs.portainer.io/start/install-ce/server/docker/linux)
+```bash
+docker run -d \
+  -p 8000:8000 \
+  -p 9443:9443 \
+  --name portainer \
+  --restart=always \ 
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \ 
+  portainer/portainer-ce:latest
 ```
