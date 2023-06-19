@@ -126,7 +126,7 @@ $  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install
 ```
 Run these two commands in your terminal to add Homebrew to your PATH:
 ```zsh
-$ echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/reynierpm/.zprofile
+$ (echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> /Users/reynierperez/.zprofile
 $ eval "$(/opt/homebrew/bin/brew shellenv)"
 ```
 ### Installing packages using Brewfile
