@@ -18,11 +18,13 @@
 5. [Others](#others)
    - [Proxmox VE Download Backup Files](#proxmox-downloadupload-backup-files)
    - Install Parallels Tools
+   - [Install Youtube-DL](#install-youtube-dl)
 6. [Docker Containers](#docker-containers)
    - [Sonar-Extended](#sonar-extended)
    - [Radar-Extended](#radarr-extended)
    - [Deluge](#deluge)
    - [Portainer](#portainer)
+   - [FlareSolverr](#flaresolverr)
 
 ## Common Configurations
 ### Git Configuration
@@ -202,14 +204,27 @@ scp -r <user>@<ip_address>:/var/lib/vz/dump/. .
 # if you are using Linux/macOS
 scp proxmox:/var/lib/vz/dump/\* .
 ```
+### Install Youtube-DL
+```bash
+# symlinks /usr/bin/python to python3
+sudo apt update && sudo apt install python-is-python3
+
+sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+sudo chmod a+rx /usr/local/bin/youtube-dl
+youtube-dl -UCopied!
+```
 
 ## Docker Containers
 ### [Sonar-Extended](https://github.com/RandomNinjaAtk/docker-sonarr-extended)
 ```bash
-docker run \
+docker run -d \
   --name=sonarr-extended \
+  -e PUID=1000 \
+  -e PGID=1000 \
   --restart unless-stopped \
   -v /home/develop/dockerConfig/sonarr-extended:/config \
+  -v /media/share/plexmedia/TvShow:/tv \
+  -v /media/share/downloads:/downloads \
   -p 8989:8989 \
   -e TZ=America/New_York \
   -e enableAutoConfig=true \
@@ -221,15 +236,19 @@ docker run \
   -e extrasLanguages=en-US,es-ES \
   -e extrasOfficialOnly=false \
   -e plexUrl=http://192.168.11.80:32400 \
-  -e plexToken=Token_Goes_Here \
+  -e plexToken=_XB3yP2YYiFVSEsGU_xd \
   randomninjaatk/sonarr-extended:latest
 ```
 ### [Radarr-Extended](https://github.com/RandomNinjaAtk/docker-radarr-extended)
 ```bash
-docker run \
+docker run -d \
   --name=radarr-extended \
+  -e PUID=1000 \
+  -e PGID=1000 \
   --restart unless-stopped \
   -v /home/develop/dockerConfig/radarr-extended:/config \
+  -v /media/share/plexmedia:/movies \
+  -v /media/share/downloads:/downloads \
   -p 7878:7878 \
   -e TZ=America/New_York \
   -e enableAutoConfig=true \
@@ -242,20 +261,22 @@ docker run \
   -e extrasSingle=false \
   -e extrasKodiCompatibility=false \
   -e plexUrl=http://192.168.11.80:32400 \
-  -e plexToken=Token_Goes_Here \
+  -e plexToken=_XB3yP2YYiFVSEsGU_xd \
   randomninjaatk/radarr-extended:latest
 ```
 ### [Deluge](https://hub.docker.com/r/linuxserver/deluge)
 ```bash
 docker run -d \
   --name=deluge \
+  -e PUID=1000 \
+  -e PGID=1000 \
   -e TZ=America/New_York \
   -e DELUGE_LOGLEVEL=error \
   -p 8112:8112 \
   -p 6881:6881 \
   -p 6881:6881/udp \
   -v /home/develop/dockerConfig/deluge:/config \
-  -v /path/to/your/downloads:/downloads \
+  -v /media/share/downloads:/downloads \
   --restart unless-stopped \
   lscr.io/linuxserver/deluge:latest
 ```
@@ -269,4 +290,14 @@ docker run -d \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v portainer_data:/data \ 
   portainer/portainer-ce:latest
+```
+### [FlareSolverr](https://hub.docker.com/r/flaresolverr/flaresolverr)
+```bash
+docker run -d \
+  --name=flaresolverr \
+  -p 8191:8191 \
+  -e LOG_LEVEL=info \
+  -e TZ=America/New_York \
+  --restart unless-stopped \
+  ghcr.io/flaresolverr/flaresolverr:latest
 ```
