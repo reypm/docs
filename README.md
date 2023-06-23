@@ -1,4 +1,5 @@
 # Table of Contents
+
 1. [Common Configurations](#common-configurations)
 
 - [Git Configuration](#git-configuration)
