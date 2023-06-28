@@ -41,7 +41,7 @@ $ git config --global pull.rebase false
 $ git config --global core.editor nano
 ```
 
-### [Generating a new SSH key and adding it to the ssh-agent] (https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+### [Generating a new SSH key and adding it to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 - Open Terminal.
 - Paste the text below, substituting in your GitHub email address.
