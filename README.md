@@ -12,6 +12,7 @@
 2. Fedora Server Configuration Snippets
 3. Ubuntu Server Configuration Snippets
 4. [macOS Configuration Snippets](#macos)
+    - [Automount NFS](#automount-nfs)
     - [Install Homebrew](#install-homebrew)
     - [Installing packages using Brewfiles](#installing-packages-using-brewfile)
         - [Creating a new Brewfile](#creating-a-new-brewfile)
@@ -198,6 +199,81 @@ If the above does not work for you, you can try set `ZSH_THEME="powerlevel10k/po
 your Terminal or use `omz-reload` to get changes loaded.
 
 ## macOS
+
+### [Automount NFS](https://jswheeler.medium.com/nfs-automount-macos-montery-1a8bef92d994)
+
+- Update the `/etc/auto_master` file as follows.
+    ```zsh
+    # ALWAYS create a copy of your original file
+    sudo cp /etc/auto_master /etc/auto_master.ori
+  
+    #
+    # Automounter master map
+    #
+    +auto_master  # Use directory service
+    #/net   -hosts  -nobrowse,hidefromfinder,nosuid
+    /home   auto_home -nobrowse,hidefromfinder
+    /Network/Servers -fstab
+    /-   -static
+    /-   auto_nfs -soft,nobrowse,nosuid
+    ```
+  This creates a direct map with entries in the file /etc/auto_nfs.
+
+  > **Hard mount:** If the NFS file system is hard mounted, the NFS daemons try repeatedly to contact the server. The
+  NFS daemon retries will not time out, they affect system performance, and you cannot interrupt them, but control
+  returns to the client when the nfstimeout value is reached.
+
+- Create the target directories the remote NFS points will attach to.
+    ```zsh
+    # Repeat the below line as many times as needed
+    sudo mkdir -p /System/Volumes/Data/<folder_name>
+    ```
+- Add the following lines to the `/etc/auto_nfs` file.
+    ```zsh
+    # ALWAYS create a copy of your original file
+    sudo cp /etc/auto_nfs /etc/auto_nfs.ori
+    
+    # Repeat the below line as many times as needed
+    /System/Volumes/Data/HomeOfficeNAS/Downloads -fstype=nfs,soft,resvport,rw,noowners <server_ip_address>:/<shared_folder>
+   ```
+
+- List the mounts provided:
+    ```zsh
+    showmount  -e <server_ip_address>
+    ```
+
+- Mount the remote endpoints:
+    ```zsh
+    sudo automount -v
+    ```
+  #### Finding your mount points
+
+  You may want a friendly path to the mount point. /System/Volume/Data/<folder_name> is not easy for me to remember and
+  is preferable to have something mount at `/`. This is where `/etc/synthetic.conf` comes in. A few notes about
+  synthetics:
+
+  > SYNTHETIC ENTITIES: Synthetic entities may not be deleted at runtime. In order to delete a synthetic entity, it must
+  be removed from synthetic.conf, and the host must be rebooted. New files and directories may not be created within a
+  synthetic empty directory.
+
+  > FORMAT: synthetic.conf specifies a single synthetic entity per line. Each line may have one or two columns,
+  separated by a tab character. If a line has a single column, it denotes a virtual empty directory to be created at /.
+  If a line has two columns, it denotes a symbolic link at / whose link target is given in the second column.
+
+  In either case, the first column denotes the name of the entity to be created at `/`.
+
+  Modify the `/etc/synthetic.conf` file as follows:
+
+    ```zsh
+    # ALWAYS create a copy of your original file
+    sudo cp /etc/synthetic.conf /etc/synthetic.conf.ori
+    
+    <folder_name>^ISystem/Volumes/Data/<folder_name>
+    ```
+
+  Check if the content is correct using `cat -t /etc/synthetic.conf`.
+
+  > The cat -t command prints non-printable characters. The ^I is a tab character.
 
 ### [Install Homebrew](https://brew.sh/)
 
