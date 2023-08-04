@@ -1,14 +1,12 @@
 # Table of Contents
 
 1. [Common Configurations](#common-configurations)
-
-- [Git Configuration](#git-configuration)
-    - [Generating a new SSH key and adding it to the ssh-agent](#generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent-httpsdocsgithubcomenauthenticationconnecting-to-github-with-sshgenerating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-    - [Setup Password Less SSH](#setup-passwordless-ssh-login)
-    - [Install OhMyZsh](#install-ohmyzsh)
-        - [OhMyZSH Recommended Configuration](#ohmyszh-recommended-configuration)
-    - [Setup Powerlevel10k Theme](#setup-powerlevel10k-theme)
-
+    - [Git Configuration](#git-configuration)
+        - [Generating a new SSH key and adding it to the ssh-agent](#generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent-httpsdocsgithubcomenauthenticationconnecting-to-github-with-sshgenerating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+        - [Setup Password Less SSH](#setup-passwordless-ssh-login)
+        - [Install OhMyZsh](#install-ohmyzsh)
+            - [OhMyZSH Recommended Configuration](#ohmyszh-recommended-configuration)
+        - [Setup Powerlevel10k Theme](#setup-powerlevel10k-theme)
 2. Fedora Server Configuration Snippets
 3. Ubuntu Server Configuration Snippets
 4. [macOS Configuration Snippets](#macos)
@@ -22,9 +20,10 @@
     - Install Parallels Tools
 5. [Others](#others)
     - [Proxmox VE Download Backup Files](#proxmox-downloadupload-backup-files)
-    - Install Parallels Tools
     - [Install Youtube-DL](#install-youtube-dl)
+    - [Setting up Cmder + WSL2 + zsh](#setting-up-cmder--wsl2--szh-windows)
 6. [Docker Containers](#docker-containers)
+    - [Radarr](#radarr)
     - [Sonar-Extended](#sonar-extended)
     - [Radar-Extended](#radarr-extended)
     - [Deluge](#deluge)
@@ -399,7 +398,104 @@ sudo chmod a+rx /usr/local/bin/youtube-dl
 youtube-dl -UCopied!
 ```
 
+### Setting up Cmder + WSL2 + szh (Windows)
+
+1. Open Windows Feature and check the tick-box with the name Windows Subsystem for Linux. This will allow us to run
+   Ubuntu subsystem underneath the hood.
+   ![Windows Features](images/windows-features.webp "Windows Features")
+2. Open Microsoft Store and download and install Ubuntu. You should get the latest LTS version available(here is 20.04).
+   ![Ubuntu Server](images/ubuntu.webp "Ubuntu Server")
+   Once installed, open Ubuntu and make any initializations needed. The console will walk you through.
+3. Go to [cmder.app](https://cmder.app), download the Full zip file and extract it to a convenient location. (Mine was
+   home folder).
+4. We continue by making our Ubuntu subsystem the default option of Cmder. Go to `Settings → Startup → Tasks`. Press `+`
+   button and create a new task. You can give it any name you want. I chose `Ubuntu::bash`. In the Task parameters input
+   you can select an icon: `/icon "%CMDER_ROOT%\icons\cmder.ico"`. In the Commands input, you should enter the command
+   that this task executes. This is the actual call to Bash: `%windir%\system32\bash.exe ~ -cur_console:p`
+   ![Cmder Settings](images/cmder-settings.jpeg "Cmder Settings")
+5. Once you’ve finished the creation you have to make the task we created the default one. Go to `Settings → Startup`
+   and in the Specified named task dropdown choose the appropriate task.
+   ![Cmder Tasks](images/cmder-tasks.jpeg "Cmder Tasks")
+6. Now if you fire up cmder you would be able to see the Ubuntu subsystem on your screen!
+
+> Note: if you are using Powerlevel10k with OhMyZSH you will need to install
+>
+the [Meslo Nerd Font patched for Powerlevel10k](https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k)
+> and set up the right fonts Go to `Settings → General → Fonts` and choose the recent installed MeslolLGS font.
+> ![Cmder Fonts](images/cmder-fonts.jpeg "Cmder Fonts")
+
+References:
+
+- [The Ninja console you deserve — How to install Cmder, WSL and Zsh in Windows 10](https://medium.com/@d.grigoriou/the-ninja-console-you-deserve-how-to-install-cmder-wsl-and-zsh-in-windows-10-66eefbb22587)
+- [Setup cmder + wsl](https://gist.github.com/ikhsanalatsary/2068a698a56d6b0a4a77a2e469650ed3)
+- [Setting up Windows Subsystem for Linux with zsh + oh-my-zsh + ConEmu](https://blog.joaograssi.com/windows-subsystem-for-linux-with-oh-my-zsh-conemu/)
+- [Set up Bash(Ubuntu) in Cmder](https://github.com/hirenchauhan2/bash-zsh-on-windows-cmder)
+- [zsh running on cmder](https://medium.com/@nuno.caneco/zsh-running-on-cmder-498353a1495d)
+
 ## Docker Containers
+
+### Radarr
+
+### Links
+
+- [DockerHub](https://hub.docker.com/r/linuxserver/radarr)
+- [Github](https://github.com/Radarr/Radarr)
+
+### Set up [arr-scripts](https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/readme.md)
+
+> :information_source: Note: if you will not use `arr-scripts` you can skip these steps and go to
+> the [Installing using Docker](#installing-using-docker) section.
+
+In order to use `arr-scripts` (highly recommended) we will need to create some extra directories. I will use my home
+directory to store the container configuration, databases and so on. According to `arr-scripts` docs you should create
+the following directories:
+
+```bash
+sudo mkdir -p <path_to_your_home>/dockerConfig/radarr/custom-services.d
+sudo mkdir -p <path_to_your_home>/dockerConfig/radarr/custom-cont-init.d
+
+# Example
+sudo mkdir -p /home/develop/dockerConfig/radarr/custom-services.d
+sudo mkdir -p /home/develop/dockerConfig/radarr/custom-cont-init.d
+```
+
+Next you will have to download
+the [scripts_init.bash](https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/scripts_init.bash) and move it
+to `<path_to_your_home>/dockerConfig/radarr/custom-cont-init.d`.
+
+```bash
+cd /home/develop/dockerConfig/radarr/custom-cont-init.d
+wget https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/scripts_init.bash
+```
+
+> Note: :information_source: the link was taken when these ß∂ƒdocs were written which means it can change at any time,
+> and
+> you could get a 404 response. Please be sure to visit the link to make sure it still alive.ß∂ƒ
+
+### Installing using docker
+
+```bash
+
+# Default setup
+docker run -d \
+  --name=radarr \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=America/New_York \
+  -p 7878:7878 \
+  -v /home/develop/dockerConfig/radarr:/config \
+  -v /media/share/plexmedia/Movies:/movies \
+  -v /media/share/downloads:/downloads \
+  --restart unless-stopped \
+  lscr.io/linuxserver/radarr:latest
+  
+# Setup when using arr-scripts (the only different with the above is the two extra volumes needed)
+ß∂ƒ
+```
+
+### Sonarr
+
+### [ArrScripts](https://github.com/RandomNinjaAtk/arr-scripts)
 
 ### [Sonar-Extended](https://github.com/RandomNinjaAtk/docker-sonarr-extended)
 
