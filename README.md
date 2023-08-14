@@ -23,9 +23,10 @@
     - [Install Youtube-DL](#install-youtube-dl)
     - [Setting up Cmder + WSL2 + zsh](#setting-up-cmder--wsl2--szh-windows)
 6. [Docker Containers](#docker-containers)
+    - [Arr-Scripts](#arr-scripts)
     - [Radarr](#radarr)
-    - [Sonar-Extended](#sonar-extended)
-    - [Radar-Extended](#radarr-extended)
+    - [Sonarr](#sonarr)
+    - [Prowlarr]()
     - [Deluge](#deluge)
     - [Portainer](#portainer)
     - [FlareSolverr](#flaresolverr)
@@ -36,7 +37,7 @@
 
 ```zsh
 $ git config --global user.name "<your_name>"
-$ git config --global user.email <your_email>
+$ git config --global user.email "<your_email>"
 $ git config --global pull.rebase false
 $ git config --global core.editor nano
 ```
@@ -434,49 +435,41 @@ References:
 
 ## Docker Containers
 
-### Radarr
-
-### Links
-
-- [DockerHub](https://hub.docker.com/r/linuxserver/radarr)
-- [Github](https://github.com/Radarr/Radarr)
-
-### Set up [arr-scripts](https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/readme.md)
-
-> :information_source: Note: if you will not use `arr-scripts` you can skip these steps and go to
-> the [Installing using Docker](#installing-using-docker) section.
+### [Arr-Scripts](https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/readme.md)
 
 In order to use `arr-scripts` (highly recommended) we will need to create some extra directories. I will use my home
 directory to store the container configuration, databases and so on. According to `arr-scripts` docs you should create
 the following directories:
 
 ```bash
-sudo mkdir -p <path_to_your_home>/dockerConfig/radarr/custom-services.d
-sudo mkdir -p <path_to_your_home>/dockerConfig/radarr/custom-cont-init.d
+sudo mkdir -p <path_to_your_home>/dockerConfig/<sonarr|radarr>/custom-services.d
+sudo mkdir -p <path_to_your_home>/dockerConfig/<sonarr|radarr>/custom-cont-init.d
 
 # Example
-sudo mkdir -p /home/develop/dockerConfig/radarr/custom-services.d
-sudo mkdir -p /home/develop/dockerConfig/radarr/custom-cont-init.d
+sudo mkdir -p /home/develop/dockerConfig/sonarr/custom-services.d
+sudo mkdir -p /home/develop/dockerConfig/sonarr/custom-cont-init.d
 ```
 
 Next you will have to download
 the [scripts_init.bash](https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/scripts_init.bash) and move it
-to `<path_to_your_home>/dockerConfig/radarr/custom-cont-init.d`.
+to `<path_to_your_home>/dockerConfig/<sonarr|radarr>/custom-cont-init.d`.
 
 ```bash
-cd /home/develop/dockerConfig/radarr/custom-cont-init.d
+cd /home/develop/dockerConfig/sonarr/custom-cont-init.d
 wget https://github.com/RandomNinjaAtk/arr-scripts/blob/main/radarr/scripts_init.bash
 ```
 
-> Note: :information_source: the link was taken when these ß∂ƒdocs were written which means it can change at any time,
-> and
-> you could get a 404 response. Please be sure to visit the link to make sure it still alive.ß∂ƒ
+### Radarr
 
-### Installing using docker
+#### Links
+
+- [Official Website](https://wiki.servarr.com/en/radarr)
+- [DockerHub](https://hub.docker.com/r/linuxserver/radarr)
+- [Github](https://github.com/Radarr/Radarr)
+
+#### Installing using docker
 
 ```bash
-
-# Default setup
 docker run -d \
   --name=radarr \
   -e PUID=1000 \
@@ -486,68 +479,59 @@ docker run -d \
   -v /home/develop/dockerConfig/radarr:/config \
   -v /media/share/plexmedia/Movies:/movies \
   -v /media/share/downloads:/downloads \
+  # Add the following volumes if using arr-scripts
+  -v /home/develop/dockerConfig/radarr/custom-services.d:/custom-services.d \
+  -v /home/develop/dockerConfig/radarr/custom-cont-init.d:/custom-cont-init.d \
   --restart unless-stopped \
   lscr.io/linuxserver/radarr:latest
-  
-# Setup when using arr-scripts (the only different with the above is the two extra volumes needed)
-ß∂ƒ
 ```
 
-### Sonarr
+## Sonarr
 
-### [ArrScripts](https://github.com/RandomNinjaAtk/arr-scripts)
+#### Links
 
-### [Sonar-Extended](https://github.com/RandomNinjaAtk/docker-sonarr-extended)
+- [Official Website](https://wiki.servarr.com/en/sonarr)
+- [DockerHub](https://hub.docker.com/r/linuxserver/sonarr)
+- [Github](https://github.com/Sonarr/Sonarr)
+
+#### Installing using docker
 
 ```bash
 docker run -d \
-  --name=sonarr-extended \
+  --name=sonarr \
   -e PUID=1000 \
   -e PGID=1000 \
-  --restart unless-stopped \
-  -v /home/develop/dockerConfig/sonarr-extended:/config \
+  -e TZ=America/New_York \
+  -p 8989:8989 \
+  -v /home/develop/dockerConfig/sonarr:/config \
   -v /media/share/plexmedia/TvShow:/tv \
   -v /media/share/downloads:/downloads \
-  -p 8989:8989 \
-  -e TZ=America/New_York \
-  -e enableAutoConfig=true \
-  -e enableRecyclarr=true \
-  -e enableQueueCleaner=true \
-  -e enableYoutubeSeriesDownloader=true \
-  -e enableExtras=true \
-  -e extrasType=all \
-  -e extrasLanguages=en-US,es-ES \
-  -e extrasOfficialOnly=false \
-  -e plexUrl=http://192.168.11.80:32400 \
-  -e plexToken=_XB3yP2YYiFVSEsGU_xd \
-  randomninjaatk/sonarr-extended:latest
+  # Add the following volumes if using arr-scripts
+  -v /home/develop/dockerConfig/sonarr/custom-services.d:/custom-services.d \
+  -v /home/develop/dockerConfig/sonarr/custom-cont-init.d:/custom-cont-init.d \
+  --restart unless-stopped \
+  lscr.io/linuxserver/sonarr:latest
 ```
 
-### [Radarr-Extended](https://github.com/RandomNinjaAtk/docker-radarr-extended)
+### Prowlarr
+
+#### Links
+
+- [Website](https://wiki.servarr.com/prowlarr)
+- [Github](https://github.com/Prowlarr/Prowlarr)
+
+#### Installing using docker
 
 ```bash
 docker run -d \
-  --name=radarr-extended \
+  --name=prowlarr \
   -e PUID=1000 \
   -e PGID=1000 \
+  -e TZ=Etc/UTC \
+  -p 9696:9696 \
+  -v /home/develop/dockerConfig/prowlarr:/config \
   --restart unless-stopped \
-  -v /home/develop/dockerConfig/radarr-extended:/config \
-  -v /media/share/plexmedia:/movies \
-  -v /media/share/downloads:/downloads \
-  -p 7878:7878 \
-  -e TZ=America/New_York \
-  -e enableAutoConfig=true \
-  -e enableRecyclarr=true \
-  -e enableQueueCleaner=true \
-  -e enableExtras=true \
-  -e extrasType=all \
-  -e extrasLanguages=en-US,es-ES \
-  -e extrasOfficialOnly=false \
-  -e extrasSingle=false \
-  -e extrasKodiCompatibility=false \
-  -e plexUrl=http://192.168.11.80:32400 \
-  -e plexToken=_XB3yP2YYiFVSEsGU_xd \
-  randomninjaatk/radarr-extended:latest
+  lscr.io/linuxserver/prowlarr:latest
 ```
 
 ### [Deluge](https://hub.docker.com/r/linuxserver/deluge)
