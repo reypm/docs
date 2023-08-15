@@ -16,6 +16,7 @@
         - [Creating a new Brewfile](#creating-a-new-brewfile)
     - [Install Bat](#install-bat)
     - [Install Cakebrew](#install-cakebrew)
+    - [Install PHP for local development]()
     - [Cheatsheet](#cheatsheet)
     - Install Parallels Tools
 5. [Others](#others)
@@ -314,6 +315,67 @@ brew bundle dump
 ```zsh
 $ brew install cakebrew
 ```
+
+### [Install PHP for local development](https://github.com/shivammathur/homebrew-php)
+
+1. On macOS, install Xcode Command Line Utilities:
+
+```bash
+xcode-select --install
+```
+
+2. If you have packages from old homebrew/php tap, refer to this guide for removing them then:
+
+- Remove PHP from the Homebrew Cellar: `rm -rf $(brew --cellar)/php`
+- Remove old PHP Launch Agents and daemons, if present:
+
+```bash
+rm -f ~/Library/LaunchAgents/homebrew.mxcl.php*
+rm -f /Library/LaunchAgents/homebrew.mxcl.php*
+rm -f /Library/LaunchDaemons/homebrew.mxcl.php*
+```
+
+- Remove the deprecated homebrew/php tap, if present: `brew untap homebrew/php`
+- Remove the deprecated exolnet/deprecated tap, if present: `brew untap exolnet/deprecated`
+- Run brew cleanup: `brew cleanup`
+
+3. Update homebrew and the formulae: `brew update`
+4. Add this tap: `brew tap shivammathur/php`
+5. Install PHP: `brew install shivammathur/php/php`
+6. After installing you have to link it: `brew link --overwrite --force shivammathur/php/php`
+7. Restart the terminal and test your PHP version: `php -v`
+
+When the installation finish you should end up with something like follows:
+
+```bash
+~ ❯ ...
+/opt/homebrew/Cellar/php/8.2.9: 520 files, 83.5MB
+==> Running `brew cleanup php`...
+Disable this behaviour by setting HOMEBREW_NO_INSTALL_CLEANUP.
+Hide these hints with HOMEBREW_NO_ENV_HINTS (see `man brew`).
+==> Caveats
+==> php
+To enable PHP in Apache add the following to httpd.conf and restart Apache:
+LoadModule php_module /opt/homebrew/opt/php/lib/httpd/modules/libphp.so
+
+    <FilesMatch \.php$>
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+
+Finally, check DirectoryIndex includes index.php
+DirectoryIndex index.php index.html
+
+The php.ini and php-fpm.ini file can be found in:
+/opt/homebrew/etc/php/8.2/
+
+To start shivammathur/php/php now and restart at login:
+brew services start shivammathur/php/php
+Or, if you don't want/need a background service you can just run:
+/opt/homebrew/opt/php/sbin/php-fpm --nodaemonize
+```
+
+> Note: Running `brew install shivammathur/php/php` will install the latest stable version of PHP, for other version
+> please check [here](https://github.com/shivammathur/homebrew-php#php-support)
 
 ### [Install Bat](https://formulae.brew.sh/formula/bat)
 
