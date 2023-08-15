@@ -16,7 +16,7 @@
         - [Creating a new Brewfile](#creating-a-new-brewfile)
     - [Install Bat](#install-bat)
     - [Install Cakebrew](#install-cakebrew)
-    - [Install PHP for local development]()
+    - [Install PHP for local development](#install-php-for-local-development)
     - [Cheatsheet](#cheatsheet)
     - Install Parallels Tools
 5. [Others](#others)
@@ -376,6 +376,15 @@ Or, if you don't want/need a background service you can just run:
 
 > Note: Running `brew install shivammathur/php/php` will install the latest stable version of PHP, for other version
 > please check [here](https://github.com/shivammathur/homebrew-php#php-support)
+
+#### [Install PHP Extensions](https://github.com/shivammathur/homebrew-extensions)
+
+1. Add this tap: `brew tap shivammathur/extensions`
+2. Then install the required extension.
+   See [Formula](https://github.com/shivammathur/homebrew-extensions/tree/master/Formula) directory for available
+   formulae.
+
+For example, to install Xdebug on PHP 8.2: `brew install shivammathur/extensions/xdebug@8.2`
 
 ### [Install Bat](https://formulae.brew.sh/formula/bat)
 
